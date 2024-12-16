@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Escolas Estaduais 2024</title>
+  <!-- Bootstrap CSS -->
+  <link 
+    rel="stylesheet" 
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" 
+  />
+  <!-- Estilos personalizados -->
+  <style>
+    .card {
+      border-radius: 10px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+    .card-text {
+      font-size: 2rem;
+    }
+
+    /* Container principal com espaçamento lateral de 2% */
+    .container-fluid-custom {
+      padding: 0 2%;
+      width: 100%;
+    }
+
+    /* Campo de filtro e tabela para ocupar toda a largura */
+    #filterInput {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .table-responsive {
+      margin: 0;
+    }
+
+    /* Estiliza a tabela para ocupar toda a largura */
+    table {
+      width: 100%;
+      margin: 0;
+    }
+
+    /* Linha de subtotais destacada */
+    .subtotal-row {
+      font-weight: bold;
+    }
+
+    /* Estilo para o loader */
+    #loadingIndicator {
+      background-color: rgba(255, 255, 255, 0.8);
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Modal -->
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="loginModalLabel">Login</h5>
+        </div>
+        <div class="modal-body">
+          <form id="loginForm">
+            <div class="mb-3">
+              <label for="username" class="form-label">Usuário</label>
+              <input type="text" id="username" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Senha</label>
+              <input type="password" id="password" class="form-control" required />
+            </div>
+            <button type="submit" class="btn btn-primary">Entrar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid-custom mt-4">
+    <!-- Cards para Totais -->
+    <div class="row mb-3 g-3">
+      <div class="col-md-4">
+        <div class="card text-white bg-success">
+          <div class="card-body text-center">
+            <h5 class="card-title mb-0">Total de Escolas</h5>
+            <p id="totalSchools" class="card-text fs-3 mb-0">0</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card text-white bg-success">
+          <div class="card-body text-center">
+            <h5 class="card-title mb-0">Total de Turmas</h5>
+            <p id="totalTurmas" class="card-text fs-3 mb-0">0</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card text-white bg-success">
+          <div class="card-body text-center">
+            <h5 class="card-title mb-0">Total de Alunos</h5>
+            <p id="totalAlunos" class="card-text fs-3 mb-0">0</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filtro e Tabela -->
+    <input 
+      type="text" 
+      id="filterInput" 
+      class="form-control" 
+      placeholder="Filtrar por município, escola ou modalidade..." 
+    />
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>Projeto</th>
+            <th>Gestão</th>
+            <th>Município</th>
+            <th>CDE</th>
+            <th>Código Escola</th>
+            <th>Escola</th>
+            <th>Modalidade</th>
+            <th>Nível Ensino</th>
+            <th>Ensino</th>
+            <th>Fase</th>
+            <th>Turmas Tecnológicas</th>
+            <th>Alunos Tecnológicos</th>
+            <th>Turmas Regulares</th>
+            <th>Alunos Regulares</th>
+            <th>Turmas Totais</th>
+            <th>Alunos Totais</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+    <nav>
+      <ul class="pagination justify-content-center" id="pagination"></ul>
+    </nav>
+  </div>
+
+  <!-- Bootstrap JS e Popper.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+  <!-- Script principal -->
+  <script src="script.js"></script>
+</body>
+</html>

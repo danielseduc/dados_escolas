@@ -1,23 +1,37 @@
 services:
   backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
     environment:
-      NODE_ENV: development
+      - NODE_ENV=production
+      - JWT_SECRET=your_jwt_secret
     volumes:
-      - .:/app
+      - ./backend:/app
       - /app/node_modules
-    stdin_open: true
-    tty: true
+    networks:
+      - app_network
 
   frontend:
     build:
-      context: ./public
+      context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "5500:80"
+      - "80:80"
     volumes:
-      - ./public:/usr/share/nginx/html
+      - ./frontend/public:/usr/share/nginx/html
+    networks:
+      - app_network
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
