@@ -25,7 +25,7 @@ const authenticateToken = (req, res, next) => {
 
 // Middleware para verificar cache no Redis
 const cacheMiddleware = async (req, res, next) => {
-  const cacheKey = "escolas";
+  const cacheKey = "escolas_agrupadas";
   try {
     const cachedData = await redisClient.get(cacheKey);
     if (cachedData) {
@@ -40,16 +40,71 @@ const cacheMiddleware = async (req, res, next) => {
   }
 };
 
-// Rota protegida para buscar os dados reais
+// Função para processar e agrupar os dados
+const groupDataBySchool = (data) => {
+  const groupedData = {};
+
+  data.forEach((item) => {
+    const key = item.COD_ESCOLA;
+    if (!groupedData[key]) {
+      groupedData[key] = {
+        COD_ESCOLA: key,
+        ESCOLA: item.ESCOLA,
+        MUNICIPIO: item.MUNICIPIO,
+        CDE: item.CDE,
+        PROJETO: item.PROJETO,
+        GESTAO: item.GESTAO,
+        SUBTOTAL: {
+          TURMAS_TECNOLOGICO: 0,
+          ALUNOS_TECNOLOGICO: 0,
+          TURMAS_REGULAR: 0,
+          ALUNOS_REGULAR: 0,
+          TURMAS_TOTAL: 0,
+          ALUNOS_TOTAL: 0,
+        },
+        DETALHES: [],
+      };
+    }
+
+    // Adiciona os detalhes para expansão
+    groupedData[key].DETALHES.push({
+      MODALIDADE: item.MODALIDADE,
+      NIVEL_ENSINO: item.NIVEL_ENSINO,
+      ENSINO: item.ENSINO,
+      FASE: item.FASE,
+      TURMAS_TECNOLOGICO: item.TURMAS_TECNOLOGICO,
+      ALUNOS_TECNOLOGICO: item.ALUNOS_TECNOLOGICO,
+      TURMAS_REGULAR: item.TURMAS_REGULAR,
+      ALUNOS_REGULAR: item.ALUNOS_REGULAR,
+      TURMAS_TOTAL: item.TURMAS_TOTAL,
+      ALUNOS_TOTAL: item.ALUNOS_TOTAL,
+    });
+
+    // Calcula os subtotais
+    groupedData[key].SUBTOTAL.TURMAS_TECNOLOGICO += parseInt(item.TURMAS_TECNOLOGICO) || 0;
+    groupedData[key].SUBTOTAL.ALUNOS_TECNOLOGICO += parseInt(item.ALUNOS_TECNOLOGICO) || 0;
+    groupedData[key].SUBTOTAL.TURMAS_REGULAR += parseInt(item.TURMAS_REGULAR) || 0;
+    groupedData[key].SUBTOTAL.ALUNOS_REGULAR += parseInt(item.ALUNOS_REGULAR) || 0;
+    groupedData[key].SUBTOTAL.TURMAS_TOTAL += parseInt(item.TURMAS_TOTAL) || 0;
+    groupedData[key].SUBTOTAL.ALUNOS_TOTAL += parseInt(item.ALUNOS_TOTAL) || 0;
+  });
+
+  return Object.values(groupedData); // Retorna como um array
+};
+
+// Rota protegida para buscar os dados reais e agrupá-los
 router.get("/", authenticateToken, cacheMiddleware, async (req, res) => {
   try {
     const response = await axios.get("http://192.168.15.212:8000/escolas_matriculas_totais/");
     const data = response.data;
 
-    // Armazena os dados no Redis com expiração de 1 hora
-    await redisClient.set(req.cacheKey, JSON.stringify(data), { EX: 3600 });
+    // Processa os dados para agrupamento
+    const groupedData = groupDataBySchool(data);
 
-    res.json(data);
+    // Armazena os dados no Redis com expiração de 1 hora
+    await redisClient.set(req.cacheKey, JSON.stringify(groupedData), { EX: 3600 });
+
+    res.json(groupedData);
   } catch (error) {
     console.error("Erro ao buscar dados da API externa:", error.message);
     res.status(500).json({ error: "Erro ao buscar dados da API externa" });

@@ -63,6 +63,11 @@
       left: 0;
       z-index: 1000;
     }
+
+    /* Cursor indicando clique */
+    .clickable {
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -130,35 +135,33 @@
       <table class="table table-bordered table-hover">
         <thead>
           <tr>
-            <th>Projeto</th>
-            <th>Gestão</th>
             <th>Município</th>
-            <th>CDE</th>
-            <th>Código Escola</th>
             <th>Escola</th>
-            <th>Modalidade</th>
-            <th>Nível Ensino</th>
-            <th>Ensino</th>
-            <th>Fase</th>
-            <th>Turmas Tecnológicas</th>
-            <th>Alunos Tecnológicos</th>
-            <th>Turmas Regulares</th>
-            <th>Alunos Regulares</th>
+            <th>Turmas Tecnológico</th>
+            <th>Alunos Tecnológico</th>
+            <th>Tumas Regular</th>
+            <th>Alunos Regular</th>
             <th>Turmas Totais</th>
             <th>Alunos Totais</th>
           </tr>
         </thead>
-        <tbody id="tableBody"></tbody>
+        <tbody id="tableBody">
+          <!-- Conteúdo é preenchido dinamicamente pelo script -->
+        </tbody>
       </table>
-    </div>
-    <nav>
-      <ul class="pagination justify-content-center" id="pagination"></ul>
-    </nav>
+      <div class="d-flex justify-content-between align-items-center mt-3">
+        <button id="downloadButton" class="btn btn-info">Download XLSX</button>
+        <nav>
+          <ul class="pagination justify-content-center mb-0" id="pagination"></ul>
+        </nav>
+      </div>
+    </div>    
   </div>
 
   <!-- Bootstrap JS e Popper.js -->
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
   <!-- Script principal -->
   <script src="script.js"></script>
