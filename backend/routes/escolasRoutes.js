@@ -49,11 +49,11 @@ const groupDataBySchool = (data) => {
     if (!groupedData[key]) {
       groupedData[key] = {
         COD_ESCOLA: key,
-        ESCOLA: item.ESCOLA,
+        GESTAO: item.GESTAO,
         MUNICIPIO: item.MUNICIPIO,
         CDE: item.CDE,
+        ESCOLA: item.ESCOLA,
         PROJETO: item.PROJETO,
-        GESTAO: item.GESTAO,
         SUBTOTAL: {
           TURMAS_TECNOLOGICO: 0,
           ALUNOS_TECNOLOGICO: 0,

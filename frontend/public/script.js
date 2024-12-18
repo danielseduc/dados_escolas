@@ -198,6 +198,7 @@ function renderTable() {
     mainRow.setAttribute("data-bs-target", `#collapse-${index}`);
     mainRow.innerHTML = `
       <td>${school.MUNICIPIO}</td>
+      <td>${school.CDE}</td>
       <td><strong>${school.ESCOLA}</strong></td>
       <td>${formatNumber(school.SUBTOTAL.TURMAS_TECNOLOGICO)}</td>
       <td>${formatNumber(school.SUBTOTAL.ALUNOS_TECNOLOGICO)}</td>
@@ -211,7 +212,7 @@ function renderTable() {
     // Linha colapsável com os detalhes
     const collapseRow = document.createElement("tr");
     collapseRow.innerHTML = `
-      <td colspan="8">
+      <td colspan="9">
         <div class="collapse" id="collapse-${index}">
           <table class="table table-sm table-bordered mt-2">
             <thead>
@@ -220,8 +221,8 @@ function renderTable() {
                 <th>Nível Ensino</th>
                 <th>Ensino</th>
                 <th>Fase</th>
-                <th>Turmas Tecnológicas</th>
-                <th>Alunos Tecnológicos</th>
+                <th>Turmas Tecnológico</th>
+                <th>Alunos Tecnológico</th>
                 <th>Turmas Regulares</th>
                 <th>Alunos Regulares</th>
                 <th>Turmas Totais</th>
@@ -297,8 +298,10 @@ document.getElementById("filterInput").addEventListener("input", (e) => {
   const filter = e.target.value.toLowerCase();
   filteredData = allData.filter(
     (item) =>
-      item.ESCOLA.toLowerCase().includes(filter) ||
-      item.MUNICIPIO.toLowerCase().includes(filter)
+      (item.GESTAO && item.GESTAO.toLowerCase().includes(filter)) ||
+      (item.MUNICIPIO && item.MUNICIPIO.toLowerCase().includes(filter)) ||
+      (item.ESCOLA && item.ESCOLA.toLowerCase().includes(filter)) ||
+      (item.CDE && item.CDE.toLowerCase().includes(filter)) // Verifica se CDE não é null antes de aplicar o filtro
   );
   currentPage = 1;
   renderTable();
