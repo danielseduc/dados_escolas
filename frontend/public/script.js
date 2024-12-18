@@ -82,22 +82,6 @@ async function login(username, password, loginModal) {
   }
 }
 
-async function verifySession() {
-  try {
-    const response = await fetch(`${backendUrl}/api/escolas`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    if (!response.ok) throw new Error("Sessão inválida ou expirada");
-
-    fetchData();
-  } catch (error) {
-    console.error("Sessão expirada ou inválida:", error.message);
-    localStorage.removeItem("token");
-    showLoginModal();
-  }
-}
-
 // Verifica se o token é válido
 async function verifySession() {
   showLoading();
@@ -111,7 +95,8 @@ async function verifySession() {
     }
 
     console.log("Sessão válida. Token OK.");
-    fetchData();
+    // Mostra o loading enquanto os dados são carregados
+    await fetchData();
   } catch (error) {
     console.error("Sessão expirada ou inválida:", error.message);
     localStorage.removeItem("token");
@@ -158,6 +143,7 @@ document.getElementById("downloadButton").addEventListener("click", downloadFilt
 // Busca os dados da API
 async function fetchData() {
   try {
+    showLoading(); // Inicia o loading no início do carregamento
     const response = await fetch(`${backendUrl}/api/escolas`, {
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -173,6 +159,8 @@ async function fetchData() {
     console.error("Erro ao carregar os dados:", error.message);
     localStorage.removeItem("token");
     showLoginModal();
+  } finally {
+    hideLoading(); // Remove o loading após o carregamento
   }
 }
 
